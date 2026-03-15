@@ -50,3 +50,19 @@ class Solution:
         nums3.sort()
         nums1[:] = nums3
 ```
+
+## 27. Remove Element
+
+use same idea as 88, store in a separate list, use if statement to remove, store back in original list in place
+
+### solution
+
+```python
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        nums1 = nums
+        nums1 = [item for item in nums1 if item != val]
+        nums[:] = nums1
+        return len(nums)
+
+```
