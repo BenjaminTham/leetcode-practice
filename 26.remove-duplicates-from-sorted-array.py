@@ -7,6 +7,8 @@
 # @lc code=start
 class Solution:
     def removeDuplicates(self, nums: List[int]) -> int:
-        pass
+        nums[:] = list(set(nums))
+        nums.sort()
+
 # @lc code=end
 

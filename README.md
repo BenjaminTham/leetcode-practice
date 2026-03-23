@@ -66,3 +66,138 @@ class Solution:
         return len(nums)
 
 ```
+
+## 27. Remove Element
+
+at first i thought need use hash map to quickly locate duplicates. but no need. python has `nums = list(set(nums))` to remove duplicates. use that, plus the [:] to modify in place. this will cause -1 to be the last value, so use `.sort()` to sort them
+
+### solution
+
+```python
+
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        nums[:] = list(set(nums))
+        nums.sort()
+```
+
+## 80. Remove Duplicates from Sorted Array II
+
+i need to switch to practicing c++ for my work
+
+std::vector which is equivalent to list or array cannot be printed directly using std::cout
+
+have to tell the compiler to iterate and print each element one by one
+
+```c++
+std::cout << "[";
+for (int x : nums) {
+    std::cout << x << " ";
+}
+std::cout << "]" << std::endl;
+
+```
+
+`<<` means insert operator, when using `std::cout`, it means insert data into the console
+
+`std::endl` is end line. so next print will print on new line
+
+`sizeof(nums)` calculates memory size taken up by nums array. `nums.size()` calculates actual number of elements in nums array
+
+c++ has two types of array: one called array which is immutable and cannot be changed. one is called vector which can be changed but has strict data types. can use variant and define the different data types to be used in that array.
+
+previously, when i used while loop and popped elements out, it changed the length of array and the index, although remained the same, points to a different element now. so i have to replace with `-`
+
+so i had to store all the elements in another vector array with variant types because original nums vector only accepts int. copied nums and store in nums 2 like this
+
+```c++
+std::vector<std::variant<int, std::string>> nums2(nums.begin(), nums.end());
+```
+
+then to remove a certain element (in this case `-`), have to use this
+
+```c++
+std::erase(nums2, std::variant<int, std::string>("-"));
+```
+
+finally, i dont know how to copy nums2 back into nums because of type difference even though i removed all the `-`
+
+so have to use another for loop to paste everything back to nums from nums2
+
+also, to print a variant vector, seems to need to use something called visit
+
+```c++
+        std::cout << "[";
+        for (int i = 0; i < nums2.size(); i++) {
+            // std::visit lets us access the value inside the variant
+            std::visit([](auto&& arg) {
+                std::cout << arg;
+            }, nums2[i]);
+
+            std::cout << " ";
+        }
+        std::cout << "]" << std::endl;
+```
+
+so that everything, int and strings, can all be printed
+
+### solution
+
+```c++
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+
+        // printing arrays need for loops now
+        // std::cout << "[";
+        // for (int x : nums) {
+        //     std::cout << x << " ";
+        // }
+        // std::cout << "]" << std::endl;
+
+        int leftPointer = 0;
+        int rightPointer = leftPointer + 1;
+        std::vector<std::variant<int, std::string>> nums2(nums.begin(), nums.end());
+
+        while (leftPointer != rightPointer && rightPointer != nums2.size()){
+            // std::cout<<"index: "<<i<<" nums "<<nums[i]<< std::endl;
+            if(nums2[leftPointer] == nums2[rightPointer] && (rightPointer - leftPointer) == 1){
+                rightPointer += 1;
+                continue;
+            }
+            if(nums2[leftPointer] == nums2[rightPointer] && (rightPointer - leftPointer) > 1){
+                nums2[rightPointer] = "-";
+                rightPointer += 1;
+                continue;
+            }
+            if(nums2[leftPointer] != nums2[rightPointer]){
+                leftPointer = rightPointer;
+                rightPointer += 1;
+            }
+
+        }
+
+        std::erase(nums2, std::variant<int, std::string>("-"));
+
+        // std::cout << "[";
+        // for (int i = 0; i < nums2.size(); i++) {
+        //     // std::visit lets us access the value inside the variant
+        //     std::visit([](auto&& arg) {
+        //         std::cout << arg;
+        //     }, nums2[i]);
+
+        //     std::cout << " ";
+        // }
+        // std::cout << "]" << std::endl;
+
+        nums.resize(nums2.size());
+
+        for (int i = 0; i < nums2.size(); i++) {
+            nums[i] = std::get<int>(nums2[i]);
+        }
+
+        return nums.size();
+    }
+};
+```
