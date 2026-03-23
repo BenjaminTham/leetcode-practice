@@ -201,3 +201,46 @@ public:
     }
 };
 ```
+
+## 169. Majority Element
+
+immediately use hash table for counting occurences
+
+key is the thing you want to count
+
+value is the count of how many occurence the key appeared
+
+simple way to initialize a hash table
+
+```c++
+        std::unordered_map<int, int> numsMap;
+```
+
+unfortunately c++ has no way of automatically finding key with highest value. so we have to use for loop, and look for maximum value
+
+### solution
+
+```c++
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        std::unordered_map<int, int> numsMap;
+
+        for(int x : nums) {
+            numsMap[x]++;
+        }
+
+        int maxKey = -1;
+        int maxValue = -1;
+
+        for (auto const& [key, val] : numsMap) {
+            if (val > maxValue) {
+                maxValue = val;
+                maxKey = key;
+            }
+        }
+        return maxKey;
+
+    }
+};
+```
