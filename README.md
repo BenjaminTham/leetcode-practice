@@ -244,3 +244,60 @@ public:
     }
 };
 ```
+
+## 189. Rotate Array
+
+just bring the back `k` number to the front
+
+warning: there might be cases where k is larger than the size of the vector
+
+so we have to use modulo to get remainder, then take the size of the vector to minus off the remainder to know where to split (call it `place_to_split`)
+
+then, we divide this part into 2 parts; a front part and a back part.
+
+front part will do `nums.begin()`, `nums.begin()` + `place_to_split`
+
+back part will do `nums.begin()` + `place_do_split` , `nums.end()`
+
+this will solve 3 splits:
+
+1. when nums.size() is even
+2. when nums.size() is odd
+3. when k > nums.size() where nums.size() is either even or odd
+
+### solution
+
+```c++
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int placeToSplit = nums.size() - (k %= nums.size());
+
+        std::vector<int> last_N_items(nums.begin()+ placeToSplit, nums.end());
+        std::vector<int> first_N_items(nums.begin(), nums.begin() + placeToSplit);
+
+        // std::cout<<"[";
+        // for (int x:last_N_items){
+        // std::cout<<x<<",";
+        // }
+        // std::cout<<"]"<<std::endl;
+
+
+        // std::cout<<"[";
+        // for (int x:first_N_items){
+        // std::cout<<x<<",";
+        // }
+        // std::cout<<"]"<<std::endl;
+
+    nums = last_N_items;
+    nums.insert(nums.end(), first_N_items.begin(), first_N_items.end());
+
+        std::cout<<"[";
+        for (int x:nums){
+        std::cout<<x<<",";
+        }
+        std::cout<<"]"<<std::endl;
+
+    }
+};
+```
